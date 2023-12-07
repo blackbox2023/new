@@ -1,0 +1,55 @@
+Insert data to students database and collection name is details
+db.details.insertMany([
+{ name: "Jhon", age: 17, id: 1, section: "A", subject: ["Physics", "Maths"] },
+{ name: "Steve", age: 37, id: 2, section: "A", subject: [""] },
+{ name: "Mohamed", age: 17, id: 3, section: "B", subject: ["Physics", "English"] },
+{ name: "Perera", age: 21, id: 4, section: "B", subject: ["Physics","Maths", "Biology", "Chemistry"] },
+{ name: "Roman", age: 40, id: 5, section: "B", subject: ["English"] },
+{ name: "Malshan", age: 14, id: 6, section: "A", subject:["English"] },
+{ name: "Shahoon", age: 24, id: 7, section: "A", subject: ["Maths", "Physics", "Chemistry"] }
+])
+
+Displaying details of students whose age is less than 20.
+db.details.aggregate([
+  { $match: { age: { $lt: 20 } } }
+]);
+
+Sorting the students based on age in ascending order.
+db.details.aggregate([
+  { $sort: { age: 1 } }
+]);
+
+Displaying details of a student having the largest age in the section – B
+db.details.aggregate([
+  { $match: { section: 'B' } },
+  { $sort: { age: -1 } },
+  { $limit: 1 }
+]);
+
+Displaying the total number of students in section ‘B’
+db.students.aggregate([
+  { $match: { section: "B" } },
+  { $group: { _id: null, totalStudents: { $sum: 1 } } }
+]);
+
+Displaying the total number of students in both the sections
+db.details.aggregate([
+  { $group: { _id: "$section", totalStudents: { $sum: 1 } } }
+]);
+
+Display the total number of students in both the sections and maximum age from both section
+db.details.aggregate([
+  { $group: { _id: "$section", 
+              totalStudents: { $sum: 1 },
+              maxAge: { $max: "$age" } 
+            } 
+  }
+]);
+
+Display first 3 data in the dataset
+db.details.aggregate({$limit:3})
+
+Sort the last 4 data according to id
+db.details.aggregate([{$sort:{"id":-1}},{$limit:4}])
+
+mongoimport --jsonArray --db studentDB --collection Student --file C:\Users\nayan\OneDrive\Desktop\ICT186\data.json

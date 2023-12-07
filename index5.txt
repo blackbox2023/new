@@ -1,0 +1,270 @@
+use companyData
+
+db.createCollection(“salesman”)
+
+db.salesman.insertMany([  
+ {s_id: 5001, FirstName: "Thilak", LastName: "Perera", City: "Kandy", commission: 0.15 },
+ {s_id: 5009, FirstName: "Jagath", LastName: "Peris", City: "Colombo", commission: 0.13 },
+{s_id: 5003, FirstName: "Sandun", LastName: "Peris", City: "Jaffna", commission: 0.14 },
+{s_id: 5002, FirstName: "Mohamed", LastName: "Abi", City: "Trinco", commission: 0.18 },
+{s_id: 5007, FirstName: "Dilruksha", LastName: "Wera", City: "Ampara", commission: 0.11 },
+{s_id: 5005, FirstName: "Sarath", LastName: "Perera", City: "Matara", commission: 0.13 }
+])
+
+display all the information of salesmen
+db.salesman.find()
+
+display the FirstName of the salesmen Collection
+db.salesman.find({},{FirstName:1})
+
+display the Last name without object id of the salesman collection
+db.salesman.find({},{"LastName":1 , "_id":0})
+
+all the details related to LasttName is Peris
+db.salesman.find({"LastName":"Peris"})
+
+all the details related to FirstName is Sandun and City is Jaffna
+db.salesman.find({"FirstName":"Sandun" , "City":"Jaffna"})
+
+
+Update s_id 5005 Person LastName to kumara
+db.salesman.updateOne({"s_id":5005} , {$set:{"LastName":"kumara"}})
+
+Update LastName Peris Persons Commissions to 0.99
+db.salesman.updateMany({"LastName":"Peris"}, {$set:{"commission":0.99}})
+
+remove the LastName field & after display the changed view of the salesmen Collection
+db.salesman.updateMany({}, {$unset:{"LastName":1}})
+
+Create the new field, called profit and update the following details in an order (30%,29%,48%,7%, 11%, 3%).
+db.salesman.updateMany({}, {$set:{"Profit":""}})
+db.salesman.updateOne({"s_id":5009},{$set:{"Profit":"29%"}})
+db.salesman.find()
+
+Update the city's name 
+Kandy → Akurana 
+db.salesman.updateOne({"City":"Kandy"},{$set:{"City":"Akurana"}})
+
+City equal to Ampara person details
+db.salesman.find({"City":{$eq:"Ampara"}})
+
+all the details related to FirstName is Sandun and City is Jaffna
+db.salesman.find({$and:[{"FirstName":"Sandun"},{"City":{$eq:"Jaffna"}}]})
+
+Show in city firstletter that start with A
+db.salesman.find({"City":/^A/})
+
+Show in city lastletter that ends with o
+db.salesman.find({"City":/o/})
+
+Show in city “Jaffna using letter finding methods
+db.salesman.find({"City":/^Jaffna$/})
+
+To sort data A–Z or Z-A
+db.collection.find({}).sort({“field1”:1 , “field2”:-1})
+
+To show all data without first 5 data
+db.collection.find({}).skip(5)
+
+To sort data A-Z & show all data without first 5 data
+db.collection.find({}).sort({“age”:1}).skip(5)
+
+To show last 5 datasets
+db.collection.find({}).limit(5)
+
+To show last 5 datasets of age with Z-A(descending) sorting 
+db.collection.find().sort({“age”:-1}).limit(5)
+
+Only show first 5 datasets
+db.collection.find().limit(5)
+
+mongoimport --jsonArray --db studentDB --collection Student --file C:\Users\XXXX\OneDrive\Desktop\ICTXXX\data.json
+
+
+
+Insert data to students database and collection name is details
+db.details.insertMany([
+{ name: "Jhon", age: 17, id: 1, section: "A", subject: ["Physics", "Maths"] },
+{ name: "Steve", age: 37, id: 2, section: "A", subject: [""] },
+{ name: "Mohamed", age: 17, id: 3, section: "B", subject: ["Physics", "English"] },
+{ name: "Perera", age: 21, id: 4, section: "B", subject: ["Physics","Maths", "Biology", "Chemistry"] },
+{ name: "Roman", age: 40, id: 5, section: "B", subject: ["English"] },
+{ name: "Malshan", age: 14, id: 6, section: "A", subject:["English"] },
+{ name: "Shahoon", age: 24, id: 7, section: "A", subject: ["Maths", "Physics", "Chemistry"] }
+])
+
+Displaying details of students whose age is less than 20.
+db.details.aggregate([
+  { $match: { age: { $lt: 20 } } }
+]);
+
+Sorting the students based on age in ascending order.
+db.details.aggregate([
+  { $sort: { age: 1 } }
+]);
+
+Displaying details of a student having the largest age in the section – B
+db.details.aggregate([
+  { $match: { section: 'B' } },
+  { $sort: { age: -1 } },
+  { $limit: 1 }
+]);
+
+Displaying the total number of students in section ‘B’
+db.students.aggregate([
+  { $match: { section: "B" } },
+  { $group: { _id: null, totalStudents: { $sum: 1 } } }
+]);
+
+Displaying the total number of students in both the sections
+db.details.aggregate([
+  { $group: { _id: "$section", totalStudents: { $sum: 1 } } }
+]);
+
+Display the total number of students in both the sections and maximum age from both section
+db.details.aggregate([
+  { $group: { _id: "$section", 
+              totalStudents: { $sum: 1 },
+              maxAge: { $max: "$age" } 
+            } 
+  }
+]);
+
+Display first 3 data in the dataset
+db.details.aggregate({$limit:3})
+
+Sort the last 4 data according to id
+db.details.aggregate([{$sort:{"id":-1}},{$limit:4}])
+
+
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./serviceAccountKeys.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  
+});
+
+//read data from database
+
+const db = admin.firestore();
+let customerRef = db.collection("employee");
+customerRef.get().then((querySnapshot) => {
+     querySnapshot.forEach(document => {
+         console.log(document.data());
+
+     })
+ })
+
+
+//add data to databse
+
+const db = admin.firestore();
+
+ const data = {
+  id:6,
+  name:"yoshitha",
+  age:33,
+  address:"america"
+  }
+  db.collection("employee").doc(data.id.toString()).set(data);
+
+//update data
+
+ const db = admin.firestore();
+ const data = {
+    id:1,
+    name:"anjula",
+    age:30,
+    address:"horana",
+    salery:18000
+  }
+ db.collection("employee").doc(data.id.toString()).set(data);
+
+//delete data
+
+ const db = admin.firestore();
+ db.collection("employee").doc("3").delete().then(res =>{
+   console.log("!!!!!Document deleted successfully!!!!!")
+ })
+
+//create multiple data (Batch data
+
+const db = admin.firestore();
+const batch = db.batch();
+const employee3 = db.collection("employee").doc("3"); //this will be newly added to db
+
+
+batch.set(employee3,{id:3, name:"dushan", age:24, address:"kandy"});
+
+
+batch.commit().then(res => {
+  console.log("!!!Batch data added!!!")
+});
+
+npm install firebase --save
+npm install firebase-admin --save
+node ./index.js
+
+
+
+
+var admin = require("firebase-admin");
+const {faker} = require('@faker-js/faker');
+var serviceAccount = require("./serviceAccountKeys.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
+//create 10 fields
+const db=admin.firestore();
+for (let index = 0; index <10; index++){
+    db.collection("student").doc(index.toString()).set({
+        id:index,
+        name:faker.person.firstName(),
+        gender: faker.person.sex(),
+    })
+}
+
+ db.collection("student")
+     .orderBy('id')
+     .startAt(0)
+     .endAt(5)
+     .get()
+     .then(snapShot => {
+         snapShot.forEach(element => {
+             console.log(element.data().name);
+         });
+     })
+     .catch(error =>{
+         console.error("Error retriving data", error);
+     });
+
+
+npm install @faker-js/faker --save-dev
+node ./index.js
+
+const {faker} = require('@faker-js/faker');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

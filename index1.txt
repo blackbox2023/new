@@ -1,0 +1,99 @@
+Create Database companyData
+use companyData
+
+Create Collection salesman
+db.createCollection(“salesman”)
+
+Insert the data set to the database
+
+db.salesman.insertMany([  
+ {s_id: 5001, FirstName: "Thilak", LastName: "Perera", City: "Kandy", commission: 0.15 },
+ {s_id: 5009, FirstName: "Jagath", LastName: "Peris", City: "Colombo", commission: 0.13 },
+{s_id: 5003, FirstName: "Sandun", LastName: "Peris", City: "Jaffna", commission: 0.14 },
+{s_id: 5002, FirstName: "Mohamed", LastName: "Abi", City: "Trinco", commission: 0.18 },
+{s_id: 5007, FirstName: "Dilruksha", LastName: "Wera", City: "Ampara", commission: 0.11 },
+{s_id: 5005, FirstName: "Sarath", LastName: "Perera", City: "Matara", commission: 0.13 }
+])
+
+display all the information of salesmen
+db.salesman.find()
+
+display the FirstName of the salesmen Collection
+db.salesman.find({},{FirstName:1})
+
+display the Last name without object id of the salesman collection
+db.salesman.find({},{"LastName":1 , "_id":0})
+
+all the details related to LasttName is Peris
+db.salesman.find({"LastName":"Peris"})
+
+all the details related to FirstName is Sandun and City is Jaffna
+db.salesman.find({"FirstName":"Sandun" , "City":"Jaffna"})
+
+
+Update s_id 5005 Person LastName to kumara
+db.salesman.updateOne({"s_id":5005} , {$set:{"LastName":"kumara"}})
+
+Update LastName Peris Persons Commissions to 0.99
+db.salesman.updateMany({"LastName":"Peris"}, {$set:{"commission":0.99}})
+
+remove the LastName field & after display the changed view of the salesmen Collection
+db.salesman.updateMany({}, {$unset:{"LastName":1}})
+
+Create the new field, called profit and update the following details in an order (30%,29%,48%,7%, 11%, 3%).
+db.salesman.updateMany({}, {$set:{"Profit":""}})
+db.salesman.updateOne({"s_id":5009},{$set:{"Profit":"29%"}})
+db.salesman.find()
+
+Update the city's name 
+Kandy → Akurana 
+db.salesman.updateOne({"City":"Kandy"},{$set:{"City":"Akurana"}})
+
+City equal to Ampara person details
+db.salesman.find({"City":{$eq:"Ampara"}})
+
+all the details related to FirstName is Sandun and City is Jaffna
+db.salesman.find({$and:[{"FirstName":"Sandun"},{"City":{$eq:"Jaffna"}}]})
+
+Show in city firstletter that start with A
+db.salesman.find({"City":/^A/})
+
+Show in city lastletter that ends with o
+db.salesman.find({"City":/o/})
+
+Show in city “Jaffna using letter finding methods
+db.salesman.find({"City":/^Jaffna$/})
+
+To sort data A–Z or Z-A
+db.collection.find({}).sort({“field1”:1 , “field2”:-1})
+
+To show all data without first 5 data
+db.collection.find({}).skip(5)
+
+To sort data A-Z & show all data without first 5 data
+db.collection.find({}).sort({“age”:1}).skip(5)
+
+To show last 5 datasets
+db.collection.find({}).limit(5)
+
+To show last 5 datasets of age with Z-A(descending) sorting 
+db.collection.find().sort({“age”:-1}).limit(5)
+
+Only show first 5 datasets
+db.collection.find().limit(5)
+
+mongoimport --jsonArray --db studentDB --collection Student --file C:\Users\nayan\OneDrive\Desktop\ICT186\data.json
+
+
+
+
+
+
+
+
+
+
+
+
+
+

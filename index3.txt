@@ -1,0 +1,70 @@
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./serviceAccountKeys.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  
+});
+
+//read data from database
+
+const db = admin.firestore();
+let customerRef = db.collection("employee");
+customerRef.get().then((querySnapshot) => {
+     querySnapshot.forEach(document => {
+         console.log(document.data());
+
+     })
+ })
+
+
+//add data to databse
+
+const db = admin.firestore();
+
+ const data = {
+  id:6,
+  name:"yoshitha",
+  age:33,
+  address:"america"
+  }
+  db.collection("employee").doc(data.id.toString()).set(data);
+
+//update data
+
+ const db = admin.firestore();
+ const data = {
+    id:1,
+    name:"anjula",
+    age:30,
+    address:"horana",
+    salery:18000
+  }
+ db.collection("employee").doc(data.id.toString()).set(data);
+
+//delete data
+
+ const db = admin.firestore();
+ db.collection("employee").doc("3").delete().then(res =>{
+   console.log("!!!!!Document deleted successfully!!!!!")
+ })
+
+//create multiple data (Batch data
+
+const db = admin.firestore();
+const batch = db.batch();
+const employee3 = db.collection("employee").doc("3"); //this will be newly added to db
+
+
+batch.set(employee3,{id:3, name:"dushan", age:24, address:"kandy"});
+
+
+batch.commit().then(res => {
+  console.log("!!!Batch data added!!!")
+});
+
+npm install firebase --save
+npm install firebase-admin --save
+node ./index.js
+mongoimport --jsonArray --db studentDB --collection Student --file C:\Users\nayan\OneDrive\Desktop\ICT186\data.json

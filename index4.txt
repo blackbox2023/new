@@ -1,0 +1,36 @@
+var admin = require("firebase-admin");
+const {faker} = require('@faker-js/faker');
+var serviceAccount = require("./serviceAccountKeys.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+
+//create 10 fields
+const db=admin.firestore();
+for (let index = 0; index <10; index++){
+    db.collection("student").doc(index.toString()).set({
+        id:index,
+        name:faker.person.firstName(),
+        gender: faker.person.sex(),
+    })
+}
+
+ db.collection("student")
+     .orderBy('id')
+     .startAt(0)
+     .endAt(5)
+     .get()
+     .then(snapShot => {
+         snapShot.forEach(element => {
+             console.log(element.data().name);
+         });
+     })
+     .catch(error =>{
+         console.error("Error retriving data", error);
+     });
+
+
+npm install @faker-js/faker --save-dev
+node ./index.js
+
+mongoimport --jsonArray --db studentDB --collection Student --file C:\Users\nayan\OneDrive\Desktop\ICT186\data.json
